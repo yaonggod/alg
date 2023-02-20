@@ -11,7 +11,9 @@ public class Main {
 		}
 		Stack<Integer> stack = new Stack<>();
 		int[] oks = new int[n];
+		// 스택에다가 비교대상 넣음
 		stack.push(arr[n - 1]);
+		// 마지막 수는 보나마나 -1
 		oks[n - 1] = -1;
 		
 		for (int i = n - 2; i >= 0; i--) {
@@ -20,14 +22,18 @@ public class Main {
 				int p = stack.pop();
 				if (arr[i] < p) {
 					flag = true;
+					// 오큰수 당첨
 					oks[i] = p;
+					// 다음 수에도 비교 대상으로
 					stack.push(p);
 					break;
 				}
 			}
+			// 오큰수 없엉 => -1
 			if (!flag) {
 				oks[i] = -1;
 			}
+			// 나 자신도 다음 수의 비교 대상으로 넣기
 			stack.push(arr[i]);
 		}
 		StringBuilder sb = new StringBuilder();
