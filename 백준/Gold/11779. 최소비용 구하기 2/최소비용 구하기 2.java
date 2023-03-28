@@ -48,7 +48,9 @@ public class Main {
 		int[] cost = new int[n + 1];
 		// 가는 경로에 무슨 도시가 포함되었는지
 		// size가 1인 경우 -> start에서 바로 갔음
-		// size가 1보다 큰 경우 -> 마지막 값이 마지막으로 갱신된 경로
+		// size가 1보다 큰 경우 -> 마지막 값이 마지막으로 갱신된 경로(마지막 값을 걸쳐서 i로 왔다)
+		// i로 가기 위해서는 사실 어떤 경로를 거쳐서 와도 상관없음, 답이 여러개 존재
+		// end부터 타고 올라가서 contains의 마지막 원소가 1이 나올때까지 경로 저장
 		List<Integer>[] contains = new ArrayList[n + 1];
 		for (int i = 1; i <= n; i++) {
 			contains[i] = new ArrayList<>();
@@ -77,6 +79,7 @@ public class Main {
 		}
 		System.out.println(cost[end]);
 		List<Integer> finalroute = new ArrayList<>();
+		// end부터 타고가므로 역방향으로 저장
 		finalroute.add(end);
 		// 지나온거
 		int pass = end;
