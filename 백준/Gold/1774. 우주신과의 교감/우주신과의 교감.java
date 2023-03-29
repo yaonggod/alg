@@ -37,6 +37,7 @@ public class Main {
 			uy[i + 1] = sc.nextInt();
 		}
 		// 이미 연결됨
+		// 여기서 c1 c2 관계가 같은 관계가 중복되어서 나올 수 있으므로 간선 개수를 제한할 수 없음
 		for (int i = 0; i < m; i++) {
 			int c1 = sc.nextInt();
 			int c2 = sc.nextInt();
