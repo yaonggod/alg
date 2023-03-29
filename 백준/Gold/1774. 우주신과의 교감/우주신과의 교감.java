@@ -44,8 +44,8 @@ public class Main {
 		}
 		// 엣지 넣자
 		PriorityQueue<Edge> pq = new PriorityQueue<>();
-		for (int i = 1; i <= n; i++) {
-			for (int j = 1; j <= n; j++) {
+		for (int i = 1; i < n; i++) {
+			for (int j = i + 1; j <= n; j++) {
 				pq.offer(new Edge(i, j, length(ux[i], ux[j], uy[i], uy[j])));
 			}
 		}
