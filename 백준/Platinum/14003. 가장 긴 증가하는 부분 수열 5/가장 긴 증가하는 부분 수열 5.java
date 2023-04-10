@@ -23,6 +23,7 @@ public class Main {
 			System.out.println(arr[0]);
 		}
 		else {
+			int currentlen = 1;
 			for (int i = 0; i < n; i++) {
 //			for (int j = max; j >= 1; j--) {
 //				if (min[j] < arr[i]) {
@@ -41,13 +42,16 @@ public class Main {
 				// 그러면 arr[i]까지 고려한 수열의 최장 길이는 target + 1이고
 				// len[i] = target + 1
 				// min[target + 1] = arr[i]
-				int length = binarysearch(arr[i], 1, n);
+				int length = binarysearch(arr[i], 1, currentlen + 1);
 				// 못찾았음 : arr[i]가 가장 작음
 				if (length == -1) {
 					min[1] = arr[i];
 				} else {
 					len[i] = length + 1;
 					min[length + 1] = arr[i];
+					if (length > currentlen) {
+						currentlen = length;
+					}
 				}
 //			System.out.println(Arrays.toString(len));
 //			System.out.println(Arrays.toString(min));
