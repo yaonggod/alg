@@ -1,16 +1,21 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Scanner;
 import java.util.Stack;
+import java.util.StringTokenizer;
 
 public class Main {
 	static int n;
 	static int[] min, len;
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		n = sc.nextInt();
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		n = Integer.parseInt(st.nextToken());
 		int[] arr = new int[n];
+		st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < n; i++) {
-			arr[i] = sc.nextInt();
+			arr[i] = Integer.parseInt(st.nextToken());
 		}
 		// arr[i]까지 넣었을 때 가장 길어지는 수열의 길이
 		len = new int[n];
@@ -25,18 +30,6 @@ public class Main {
 		else {
 			int currentlen = 1;
 			for (int i = 0; i < n; i++) {
-//			for (int j = max; j >= 1; j--) {
-//				if (min[j] < arr[i]) {
-//					len[i] = j + 1;
-//					if (len[i] > max) max = len[i];
-//					min[len[i]] = arr[i];
-//					break;
-//				}
-//			}
-//			if (len[i] == 1 && min[1] > arr[i]) {
-//				min[1] = arr[i];
-//			}
-				
 				// 바이너리서치
 				// min[target] < arr[i] < min[target + 1]인 타겟을 찾아야댐
 				// 그러면 arr[i]까지 고려한 수열의 최장 길이는 target + 1이고
@@ -53,10 +46,7 @@ public class Main {
 						currentlen = length;
 					}
 				}
-//			System.out.println(Arrays.toString(len));
-//			System.out.println(Arrays.toString(min));
 			}
-//			System.out.println(max);
 			int max = 0;
 			int startidx = -1;
 			for (int i = 0; i < n; i++) {
