@@ -13,13 +13,13 @@ class Solution {
         for (int c = 1; c <= n; c++) {
             for (int b = 1; b <= n; b++) {
                 for (int a = 1; a <= n; a++) {
-                    if (a != c && b != c && matrix[a][c] == 0) {
-                        if (matrix[a][b] == 1 && matrix[b][c] == 1) {
-                            matrix[a][c] = 1;
-                            matrix[c][a] = -1;
-                        } else if (matrix[a][b] == -1 && matrix[b][c] == -1) {
-                            matrix[a][c] = -1;
-                            matrix[c][a] = 1;
+                    if (a != c && b != c && matrix[a][b] == 0) {
+                        if (matrix[a][c] == 1 && matrix[c][b] == 1) {
+                            matrix[a][b] = 1;
+                            matrix[b][a] = -1;
+                        } else if (matrix[a][c] == -1 && matrix[c][b] == -1) {
+                            matrix[a][b] = -1;
+                            matrix[b][a] = 1;
                         }
                     }
                 }
