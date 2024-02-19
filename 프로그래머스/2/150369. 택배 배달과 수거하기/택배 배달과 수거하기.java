@@ -4,6 +4,14 @@ class Solution {
         // 무조건 뒤에서부터 하나씩 깐다
         long moved = 0;
         
+        // 배달할거 총량
+        int totald = 0;
+        int totalp = 0;
+        for (int i = 0; i < n; i++) {
+            totald += deliveries[i];
+            totalp += pickups[i];
+        }
+        
         int c = cap;
         int start = n - 1;
         for (int i = start; i >= 0; i--) {
@@ -18,66 +26,73 @@ class Solution {
             }
         }
         while (true) {
-            // if (start == -1) break;
+            if (totald == 0 && totalp == 0) break;
             
-            // 배달
             int dIndex = start;
-            int cd = cap;
-            while (dIndex >= 0) {
-                if (deliveries[dIndex] > 0) {
-                    // 더 배달할 수 있다
-                    if (cd > deliveries[dIndex]) {
-                        cd -= deliveries[dIndex];
-                        deliveries[dIndex] = 0;
-                    // 한계다
-                    } else {
-                        deliveries[dIndex] -= cd;
-                        cd = 0;
-                        break;
-                    }
-                } 
-                dIndex--;
-            }
-            
-            // 배달할 게 처음 나타나는 지점
-            while (dIndex >= 0) {
-                if (deliveries[dIndex] > 0) break;
-                dIndex--;
-            }
+            if (totald > 0) {
+                // 배달
+                int cd = cap;
+                while (dIndex >= 0) {
+                    if (deliveries[dIndex] > 0) {
+                        // 더 배달할 수 있다
+                        if (cd > deliveries[dIndex]) {
+                            totald -= deliveries[dIndex];
+                            cd -= deliveries[dIndex];
+                            deliveries[dIndex] = 0;
+                        // 한계다
+                        } else {
+                            totald -= cd;
+                            deliveries[dIndex] -= cd;
+                            cd = 0;
+                            break;
+                        }
+                    } 
+                    dIndex--;
+                }
 
-            // 픽업
+                // 배달할 게 처음 나타나는 지점
+                while (dIndex >= 0) {
+                    if (deliveries[dIndex] > 0) break;
+                    dIndex--;
+                }
+            }
+            
             int pIndex = start;
-            int cp = cap;
-            while (pIndex >= 0) {
-                if (pickups[pIndex] > 0) {
-                    // 더 픽업할 수 있다
-                    if (cp > pickups[pIndex]) {
-                        cp -= pickups[pIndex];
-                        pickups[pIndex] = 0;
-                    // 한계다
-                    } else {
-                        pickups[pIndex] -= cp;
-                        cp = 0;
-                        break;
-                    }
-                } 
-                pIndex--;
+            if (totalp > 0) {
+                // 픽업
+                int cp = cap;
+                while (pIndex >= 0) {
+                    if (pickups[pIndex] > 0) {
+                        // 더 픽업할 수 있다
+                        if (cp > pickups[pIndex]) {
+                            totalp -= pickups[pIndex];
+                            cp -= pickups[pIndex];
+                            pickups[pIndex] = 0;
+                        // 한계다
+                        } else {
+                            totalp -= cp;
+                            pickups[pIndex] -= cp;
+                            cp = 0;
+                            break;
+                        }
+                    } 
+                    pIndex--;
+                }
+
+                // 픽업할 게 처음 나타나는 지점
+                while (pIndex >= 0) {
+                    if (pickups[pIndex] > 0) break;
+                    pIndex--;
+                }
             }
-            
-            // 픽업할 게 처음 나타나는 지점
-            while (pIndex >= 0) {
-                if (pickups[pIndex] > 0) break;
-                pIndex--;
-            }
-            
-            // 배달과 픽업이 한 번도 일어나지 않았다면
-            if (cd == cap && cp == cap) break;
             
             // 이동거리
             moved += (start + 1) * 2;
             
             // 배달해야하는 지점과 픽업해야하는 지점 중 더 뒤에서 시작하기
-            start = Math.max(dIndex, pIndex);
+            if (totald == 0) start = pIndex;
+            else if (totalp == 0) start = dIndex;
+            else start = Math.max(dIndex, pIndex);
         }
         return moved;
     }
