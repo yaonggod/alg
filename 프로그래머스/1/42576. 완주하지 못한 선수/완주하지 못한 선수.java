@@ -18,10 +18,9 @@ class Solution {
             }
         }
         
-        String answer = "";
         for (String r : runner.keySet()) {
-            answer = r;
+            return r;
         }
-        return answer;
+        return null;
     }
 }
