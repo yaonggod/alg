@@ -3,7 +3,6 @@ import java.util.*;
 class Solution {
     public int solution(int n, int[] lost, int[] reserve) {
         Arrays.sort(lost);
-        Arrays.sort(reserve);
         int[] count = new int[n + 2];
         Arrays.fill(count, 1);
         count[0] = 0;
