@@ -1,6 +1,7 @@
 class Solution {
     public long solution(int w, int h) {
         int g = gcd(w, h);
+        System.out.println(g);
         // 가장 작은 단위의 직사각형으로 나누기
         int sw = w / g;
         int sh = h / g;
@@ -15,9 +16,8 @@ class Solution {
     }
     
     public static int gcd(int a, int b) {
-        if (a % b == 0) return b;
-        if (b % a == 0) return a;
+        if (a == 0) return b;
         if (a > b) return gcd(a % b, b);
-        return gcd(a, b % a);
+        return gcd(b % a, a);
     }
 }
