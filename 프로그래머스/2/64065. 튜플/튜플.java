@@ -3,34 +3,21 @@ import java.util.*;
 class Solution {
     public int[] solution(String s) {
         // 괄호 벗기기
-        s = s.substring(1, s.length() - 1);
-        String[] tupleArr = s.split("},");
-        int n = tupleArr.length;
-        for (int i = 0; i < n; i++) {
-            if (i == n - 1) {
-                tupleArr[i] = tupleArr[i].substring(1, tupleArr[i].length() - 1);
-            } else {
-                tupleArr[i] = tupleArr[i].substring(1, tupleArr[i].length());
-            }
-        }
+        String[] tupleArr = s.replaceAll("[{}]", " ").trim().split(" , ");
+        
         // 길이별로 정리하기
-        Arrays.sort(tupleArr, new Comparator<String>() {
-            @Override
-            public int compare(String a, String b) {
-                int countA = a.split(",").length;
-                int countB = b.split(",").length;
-                return countA - countB;
-            }
-        });
+        Arrays.sort(tupleArr, (a, b) -> a.length() - b.length());
+        
         // 배열 만들기
         Set<Integer> numSet = new HashSet<>();
+        int n = tupleArr.length;
         int[] result = new int[n];
         for (int i = 0; i < n; i++) {
-            String[] tuple = tupleArr[i].split(",");
-            for (String num : tuple) {
-                if (!numSet.contains(Integer.parseInt(num))) {
-                    numSet.add(Integer.parseInt(num));
-                    result[i] = Integer.parseInt(num);
+            int[] tuple = Arrays.stream(tupleArr[i].split(",")).mapToInt(Integer::parseInt).toArray();
+            for (int num : tuple) {
+                if (!numSet.contains(num)) {
+                    numSet.add(num);
+                    result[i] = num;
                     break;
                 }
             }
