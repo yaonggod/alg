@@ -7,6 +7,7 @@ import java.util.*;
 public class Main {
     static StringTokenizer st;
     static int[] ancestor;
+    static boolean[] visited;
     static int n;
 
     public static void main(String[] args) throws IOException  {
@@ -18,6 +19,7 @@ public class Main {
             n = Integer.parseInt(br.readLine());
             // 내 바로 위 조상
             ancestor = new int[n + 1];
+            visited = new boolean[n + 1];
             // 간선
             for (int i = 0; i < n - 1; i++) {
                 st = new StringTokenizer(br.readLine());
@@ -40,21 +42,20 @@ public class Main {
     }
 
     static int nca(int a, int b) {
-        Set<Integer> aSet = new HashSet<>();
-        aSet.add(a);
-        aSet.add(b);
+        visited[a] = true;
+        visited[b] = true;
         while (true) {
             a = ancestor[a];
             b = ancestor[b];
             if (a == b && a == 0) break;
             if (a == b) return a;
             if (a != 0) {
-                if (aSet.contains(a)) return a;
-                aSet.add(a);
+                if (visited[a]) return a;
+                visited[a] = true;
             }
             if (b != 0) {
-                if (aSet.contains(b)) return b;
-                aSet.add(b);
+                if (visited[b]) return b;
+                visited[b] = true;
             }
         }
         return -1;
