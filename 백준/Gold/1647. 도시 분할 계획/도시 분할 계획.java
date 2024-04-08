@@ -1,60 +1,67 @@
-import java.util.PriorityQueue;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
 
 public class Main {
-	static class Edge implements Comparable<Edge> {
-		int start;
-		int end;
-		int length;
-		
-		public Edge(int start, int end, int length) {
-			super();
-			this.start = start;
-			this.end = end;
-			this.length = length;
-		}
+    static int[] parent;
 
-		@Override
-		public int compareTo(Edge o) {
-			return this.length - o.length;
-		}
-		
-	}
-	static int[] p;
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int n = sc.nextInt();
-		int m = sc.nextInt();
-		p = new int[n + 1];
-		for (int i = 1; i <= n; i++) {
-			p[i] = i;
-		}
-		PriorityQueue<Edge> pq = new PriorityQueue<>();
-		for (int i = 0; i < m; i++) {
-			pq.offer(new Edge(sc.nextInt(), sc.nextInt(), sc.nextInt()));
-		}
-		// 간선 갯수 : n - 2
-		int cnt = 0;
-		// 비용 총합
-		long cost = 0;
-		
-		while (true) {
-			Edge e = pq.poll();
-			if (findset(e.start) != findset(e.end)) {
-				union(e.start, e.end);
-				cnt++;
-				cost += e.length;
-			}
-			if (cnt == n - 2) break;
-		}
-		System.out.println(cost);
-	}
-	
-	static int findset(int x) {
-		if (p[x] != x) p[x] = findset(p[x]);
-		return p[x];
-	}
-	static void union(int x, int y) {
-		p[findset(y)] = findset(x);
-	}
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+
+        // MST 만들고 가장 긴 간선을 끊기
+        parent = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            parent[i] = i;
+        }
+
+        PriorityQueue<Integer[]> pq = new PriorityQueue<>(new Comparator<Integer[]>() {
+            @Override
+            public int compare(Integer[] o1, Integer[] o2) {
+                if (o1[2] < o2[2]) return -1;
+                return 1;
+            }
+        });
+
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            pq.offer(new Integer[] {a, b, c});
+        }
+
+        // n - 1개로 연결
+        int count = 0;
+        int len = 0;
+        int maxLen = 0;
+        while (count < n - 1) {
+            Integer[] edge = pq.poll();
+            int a = findParent(edge[0]);
+            int b = findParent(edge[1]);
+            if (a != b) {
+                union(a, b);
+                if (maxLen < edge[2]) maxLen = edge[2];
+                count++;
+                len += edge[2];
+            }
+        }
+        System.out.println(len - maxLen);
+    }
+
+    static int findParent(int x) {
+        if (parent[x] == x) return x;
+        return parent[x] = findParent(parent[x]);
+    }
+
+    static void union(int a, int b) {
+        a = findParent(a);
+        b = findParent(b);
+        if (a < b) parent[b] = a;
+        else parent[a] = b;
+    }
 }
