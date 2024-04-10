@@ -5,18 +5,6 @@ import java.util.*;
 
 
 public class Main {
-    static int target;
-    static boolean[] visited;
-
-    static class Turn {
-        String now;
-        String command;
-
-        Turn(String now, String command) {
-            this.now = now;
-            this.command = command;
-        }
-    }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -24,75 +12,79 @@ public class Main {
         StringBuilder sb = new StringBuilder();
         for (int tc = 0; tc < t; tc++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            String A = st.nextToken();
-            String B = st.nextToken();
-            visited = new boolean[10000];
-            visited[Integer.parseInt(A)] = true;
-            target = Integer.parseInt(B);
+            int A = Integer.parseInt(st.nextToken());
+            int B = Integer.parseInt(st.nextToken());
+            
+            // 어디서부터 왔는지
+            int[] parent = new int[10000];
+            // 어떻게 왔는지 
+            String[] visited = new String[10000];
 
-            String result = "";
+            // 이번 tc의 커맨드 모음 
+            StringBuilder sub = new StringBuilder();
 
-            Queue<Turn> queue = new LinkedList<>();
-            queue.offer(new Turn(A, ""));
+            Queue<Integer> queue = new LinkedList<>();
+            queue.offer(A);
             while (!queue.isEmpty()) {
-                Turn turn = queue.poll();
-
-                int now = Integer.parseInt(turn.now);
-                String command = turn.command;
+                int now = queue.poll();
 
                 int toD = now * 2 > 9999 ? now * 2 % 10000 : now * 2;
-                if (toD == target) {
-                    result = command + "D";
+                if (toD == B) {
+                    parent[toD] = now;
+                    visited[toD] = "D";
                     break;
                 }
-                if (!visited[toD]) {
-                    visited[toD] = true;
-                    queue.offer(new Turn(intToSt(toD), command + "D"));
+                if (visited[toD] == null) {
+                    parent[toD] = now;
+                    visited[toD] = "D";
+                    queue.offer(toD);
                 }
 
                 int toS = now - 1 == -1 ? 9999 : now - 1;
-                if (toS == target) {
-                    result = command + "S";
+                if (toS == B) {
+                    parent[toS] = now;
+                    visited[toS] = "S";
                     break;
                 }
-                if (!visited[toS]) {
-                    visited[toS] = true;
-                    queue.offer(new Turn(intToSt(toS), command + "S"));
+                if (visited[toS] == null) {
+                    parent[toS] = now;
+                    visited[toS] = "S";
+                    queue.offer(toS);
                 }
 
                 int toL = now % 1000 * 10 + now / 1000;
-                if (toL == target) {
-                    result = command + "L";
+                if (toL == B) {
+                    parent[toL] = now;
+                    visited[toL] = "L";
                     break;
                 }
-                if (!visited[toL]) {
-                    visited[toL] = true;
-                    queue.offer(new Turn(intToSt(toL), command + "L"));
+                if (visited[toL] == null) {
+                    parent[toL] = now;
+                    visited[toL] = "L";
+                    queue.offer(toL);
                 }
 
                 int toR = now / 10 + now % 10 * 1000;
-                if (toR == target) {
-                    result = command + "R";
+                if (toR == B) {
+                    parent[toR] = now;
+                    visited[toR] = "R";
                     break;
                 }
-                if (!visited[toR]) {
-                    visited[toR] = true;
-                    queue.offer(new Turn(intToSt(toR), command + "R"));
+                if (visited[toR] == null) {
+                    parent[toR] = now;
+                    visited[toR] = "R";
+                    queue.offer(toR);
                 }
             }
-            sb.append(result).append("\n");
+            // 역추적하기 
+            int start = B;
+            while (start != A) {
+                String com = visited[start];
+                sub.append(com);
+                start = parent[start];
+            }
+            sb.append(sub.reverse()).append("\n");
         }
         System.out.println(sb);
-    }
-    static String intToSt(int num) {
-        String result = "";
-        result += num / 1000;
-        num = num % 1000;
-        result += num / 100;
-        num = num % 100;
-        result += num / 10;
-        num = num % 10;
-        result += num;
-        return result;
     }
 }
