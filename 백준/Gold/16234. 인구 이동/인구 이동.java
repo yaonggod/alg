@@ -1,78 +1,86 @@
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
-import java.util.Stack;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
 
 public class Main {
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int n = sc.nextInt();
-		int l = sc.nextInt();
-		int r = sc.nextInt();
-		int[][] land = new int[n][n];
-		int[] dx = {-1, 0, 1, 0};
-		int[] dy = {0, 1, 0, -1};
-		int t = 0;
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				land[i][j] = sc.nextInt();
-			}
-		}
-		while (true) {
-			boolean change = false;
-			boolean[][] visited = new boolean[n][n];
-			Queue<Integer> qx = new LinkedList<>();
-			Queue<Integer> qy = new LinkedList<>();
-			Stack<Integer> sx = new Stack<>();
-			Stack<Integer> sy = new Stack<>();
-			for (int i = 0; i < n; i++) {
-				for (int j = 0; j < n; j++) {
-					if (!visited[i][j]) {
-						visited[i][j] = true;
-						int count = 1;
-						qx.offer(i);
-						qy.offer(j);
-						sx.add(i);
-						sy.add(j);
-						while (!qx.isEmpty()) {
-							int x = qx.poll();
-							int y = qy.poll();
-							for (int d = 0; d < 4; d++) {
-								int nx = x + dx[d];
-								int ny = y + dy[d];
-								if (nx >= 0 && nx < n && ny >= 0 && ny < n && !visited[nx][ny]) {
-									int gap = Math.abs(land[x][y] - land[nx][ny]);
-									if (gap <= r && gap >= l) {
-										visited[nx][ny] = true;
-										qx.offer(nx);
-										qy.offer(ny);
-										sx.add(nx);
-										sy.add(ny);
-										count++;
-									}
-								}
-							}
-						}
-						if (count > 1) {
-							change = true;
-						}
-						int people = 0;
-						for (int s = 0; s < sx.size(); s++) {
-							people += land[sx.get(s)][sy.get(s)];
-						}
-						int result = people / count;
-						while (!sx.isEmpty()) {
-							land[sx.pop()][sy.pop()] = result;
-						}
-					}
-				}
-			}
-			if (change) {
-				t++;
-			} else {
-				break;
-			}
-		}
-		System.out.println(t);
-	}
+    static int day = 0;
+    static int n, l, r;
+    static int[][] nation;
+    static int[] dx = new int[] {0, -1, 0, 1};
+    static int[] dy = new int[] {1, 0, -1, 0};
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        l = Integer.parseInt(st.nextToken());
+        r = Integer.parseInt(st.nextToken());
+        nation = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < n; j++) {
+                nation[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+
+        while (true) {
+            int moved = move();
+            if (moved == 0) break;
+            day++;
+        }
+        System.out.println(day);
+    }
+
+    static int move() {
+        // 오늘 하루 이동한 사람
+        int count = 0;
+        boolean[][] visited = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (!visited[i][j]) {
+                    // 전체 인구를
+                    int total = nation[i][j];
+                    // div로 나누는데, div가 1이면 열린 국경선이 없음
+                    int div = 1;
+                    visited[i][j] = true;
+                    Queue<Integer[]> queue = new LinkedList<>();
+                    queue.offer(new Integer[] {i, j});
+                    // 이 좌표들의 인구를 통일시킨다
+                    List<Integer[]> unite = new ArrayList<>();
+                    unite.add(new Integer[] {i, j});
+                    while (!queue.isEmpty()) {
+                        Integer[] from = queue.poll();
+                        for (int d = 0; d < 4; d++) {
+                            int nx = from[0] + dx[d];
+                            int ny = from[1] + dy[d];
+                            if (nx >= 0 && nx < n && ny >= 0 && ny < n && !visited[nx][ny]) {
+                                int gap = Math.abs(nation[from[0]][from[1]] - nation[nx][ny]);
+                                // 다음 갈 곳이 차이가 범위 내
+                                if (gap >= l && gap <= r) {
+                                    visited[nx][ny] = true;
+                                    total += nation[nx][ny];
+                                    div++;
+                                    queue.offer(new Integer[] {nx, ny});
+                                    unite.add(new Integer[] {nx, ny});
+                                }
+                            }
+                        }
+                    }
+                    // 이동이 있다
+                    if (div != 1) {
+                        count += div;
+                        int target = total / div;
+                        for (int c = 0; c < unite.size(); c++) {
+                            int x = unite.get(c)[0];
+                            int y = unite.get(c)[1];
+                            nation[x][y] = target;
+                        }
+                    }
+                }
+            }
+        }
+        return count;
+    }
 }
