@@ -32,18 +32,7 @@ public class Main {
 
         // 트리 연결하기
         depth[1] = 1;
-        Queue<Integer> queue = new LinkedList<>();
-        queue.offer(1);
-        while (!queue.isEmpty()) {
-            Integer from = queue.poll();
-            for (Integer to : tree[from]) {
-                if (depth[to] == 0) {
-                    depth[to] = depth[from] + 1;
-                    parent[to] = from;
-                    queue.offer(to);
-                }
-            }
-        }
+        dfs(1, 1);
 
         int m = Integer.parseInt(br.readLine());
         for (int i = 0; i < m; i++) {
