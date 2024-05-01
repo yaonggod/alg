@@ -20,10 +20,11 @@ public class Main {
             address.put(add, pass);
         }
 
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < m; i++) {
             String find = br.readLine();
-            bw.write(address.get(find) + "\n");
+            sb.append(address.get(find)).append("\n");
         }
-        bw.close();
+        System.out.println(sb);
     }
 }
