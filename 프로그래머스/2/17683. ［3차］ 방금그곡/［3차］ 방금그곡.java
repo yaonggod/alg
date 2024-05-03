@@ -2,6 +2,10 @@ class Solution {
     public String solution(String m, String[] musicinfos) {
         int time = 0;
         String answer = "(None)";
+        
+        // 내가 들은거
+        String listened = changePattern(m);
+        
         for (String music : musicinfos) {
             String[] minfo = music.split(",");
             String[] start = minfo[0].split(":");
@@ -9,50 +13,40 @@ class Solution {
             int rt = (Integer.parseInt(end[0]) - Integer.parseInt(start[0])) * 60 +
                       Integer.parseInt(end[1]) - Integer.parseInt(start[1]);
             String title = minfo[2];
-            String pattern = minfo[3];
+            String pattern = changePattern(minfo[3]);
             
-            char[] musicArr = patternToArr(pattern);
-            char[] newArr = new char[rt];
-            char[] listenArr = patternToArr(m);
-            int idx = 0;
-            for (int i = 0; i < rt; i++) {
-                newArr[i] = musicArr[idx++];
-                if (idx == musicArr.length) idx = 0;
+            int repeat = rt / pattern.length();
+            int left = rt % pattern.length();
+            StringBuilder musicSb = new StringBuilder();
+            
+            // repeat번 반복됨
+            for (int i = 0; i < repeat; i++) {
+                musicSb.append(pattern);
             }
-            String realMusic = "";
-            for (int i = 0; i < rt; i++) {
-                realMusic += newArr[i];
-            }
-            String listenMusic = "";
-            for (int i = 0; i < listenArr.length; i++) {
-                listenMusic += listenArr[i];
-            }
-            if (realMusic.contains(listenMusic) && rt > time) {
+            // 그리고 남은 패턴 쪼가리
+            musicSb.append(pattern.substring(0, left));
+            
+            if (musicSb.toString().contains(listened) && rt > time) {
                 time = rt;
                 answer = title;
             }
-            
         }
         return answer;
     }
     
-    static char[] patternToArr(String pattern) {
-        int sharp = 0;
-        for (int i = 0; i < pattern.length(); i++) {
-            if (pattern.charAt(i) == '#') sharp++;
-        }
-        int patternlen = pattern.length() - sharp;
-        char[] patternArr = new char[patternlen];
+    static String changePattern(String pattern) {
+        StringBuilder sb = new StringBuilder();
         int idx = 0;
-        int putWhere = 0;
         while (idx < pattern.length()) {
-            char now = pattern.charAt(idx++);
-            if (now == '#') {
-                patternArr[putWhere - 1] = (char)((int) patternArr[putWhere - 1] + 32);
+            if (idx != pattern.length() - 1 && pattern.charAt(idx + 1) == '#') {
+                // 소문자로 바꾸자
+                char next = (char) ((int) pattern.charAt(idx) + 32);
+                sb.append(next);
+                idx += 2;
             } else {
-                patternArr[putWhere++] = now;
+                sb.append(pattern.charAt(idx++));
             }
         }
-        return patternArr;
+        return sb.toString();
     }
 }
