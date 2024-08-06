@@ -10,6 +10,8 @@ public class Main {
     static int tc = 0;
     static int[] dx = new int[] {0, 1, 0, -1};
     static int[] dy = new int[] {1, 0, -1, 0};
+    // 치즈 위치 저장
+    static LinkedList<Integer[]> cheeseDot = new LinkedList<>();
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -20,7 +22,10 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < m; j++) {
                 cheese[i][j] = Integer.parseInt(st.nextToken());
-                cc += cheese[i][j];
+                if (cheese[i][j] == 1) {
+                    cc += 1;
+                    cheeseDot.offer(new Integer[] {i, j});
+                }
             }
         }
 
@@ -56,22 +61,22 @@ public class Main {
     }
 
     static void meltCheese() {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (cheese[i][j] == 1) {
-                    int count = 0;
-                    for (int d = 0; d < 4; d++) {
-                        int nx = i + dx[d];
-                        int ny = j + dy[d];
-                        // 외부 공기랑 접촉
-                        if (cheese[nx][ny] == 2) count++;
-                    }
-                    if (count >= 2) {
-                        // 아직은 외부공기 아님
-                        cheese[i][j] = 0;
-                        cc--;
-                    }
-                }
+        int cheeseSize = cheeseDot.size();
+        for (int i = 0; i < cheeseSize; i++) {
+            Integer[] dot = cheeseDot.poll();
+            int count = 0;
+            for (int d = 0; d < 4; d++) {
+                int nx = dot[0] + dx[d];
+                int ny = dot[1] + dy[d];
+                // 외부 공기랑 접촉
+                if (range(nx, ny) && cheese[nx][ny] == 2) count++;
+            }
+            if (count >= 2) {
+                // 아직은 외부공기 아님
+                cheese[dot[0]][dot[1]] = 0;
+                cc--;
+            } else {
+                cheeseDot.offer(dot);
             }
         }
     }
