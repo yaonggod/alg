@@ -32,15 +32,16 @@ public class Main {
             Set<Integer> checkSet = new HashSet<>();
             for (int i = 0; i <= maxCheck; i++) {
                 if (canCheck[i]) {
-                    checkSet.add(i - b);
-                    checkSet.add(i + b);
-                    checkSet.add(b - i);
+                    if (Math.abs(b - i) <= maxCheck) {
+                        checkSet.add(Math.abs(b - i));
+                    }
+                    if (b + i <= maxCheck) {
+                        checkSet.add(b + i);
+                    }
                 }
             }
             for (Integer c : checkSet) {
-                if (c >= 0 && c <= maxCheck) {
-                    canCheck[c] = true;
-                }
+                canCheck[c] = true;
             }
         }
 
