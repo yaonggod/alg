@@ -1,41 +1,48 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int n = sc.nextInt();
-		ArrayList<ArrayList<Integer>> tree = new ArrayList<ArrayList<Integer>>();
-		for (int i = 0; i < n + 1; i++) {
-			tree.add(new ArrayList<Integer>());
-		}
-		for (int i = 0; i < n - 1; i++) {
-			int a = sc.nextInt();
-			int b = sc.nextInt();
-			tree.get(a).add(b);
-			tree.get(b).add(a);
-		}
-		int[] visited = new int[n + 1];
-		visited[1] = 1;
-		Queue<Integer> queue = new LinkedList<Integer>();
-		queue.offer(1);
-		int[] parent = new int[n + 1];
-		while (queue.size() > 0) {
-			int p = queue.poll();
-			for (int c : tree.get(p)) {
-				if (visited[c] == 0) {
-					visited[c] = 1;
-					queue.offer(c);
-					parent[c] = p;
-				}
-			}
-		}
-		for (int i = 2; i < n + 1; i++) {
-			System.out.println(parent[i]);
-		}
+    static boolean[] visited;
+    static int[] root;
+    static ArrayList<Integer>[] tree;
+    static Queue<Integer> queue = new LinkedList<>();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+        visited = new boolean[n + 1];
+        root = new int[n + 1];
+        tree = new ArrayList[n + 1];
+        for (int i = 1; i <= n; i++) {
+            tree[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < n - 1; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            tree[a].add(b);
+            tree[b].add(a);
+        }
 
-	}
+        // 트리 탐색
+        visited[1] = true;
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(1);
+
+        while (!queue.isEmpty()) {
+            Integer from = queue.poll();
+            for (Integer to : tree[from]) {
+                if (!visited[to]) {
+                    visited[to] = true;
+                    root[to] = from;
+                    queue.offer(to);
+                }
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 2; i <= n; i++) {
+            sb.append(root[i]).append("\n");
+        }
+        System.out.println(sb);
+    }
 
 }
