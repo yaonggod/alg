@@ -18,7 +18,6 @@ public class Main {
         }
 
         int[][] dp = new int[n][m];
-        int MIN = -100 * n * m;
 
         dp[0][0] = map[0][0];
         for (int i = 1; i < m; i++) {
@@ -28,8 +27,6 @@ public class Main {
         for (int i = 1; i < n; i++) {
             int[] left = new int[m];
             int[] right = new int[m];
-            Arrays.fill(left, MIN);
-            Arrays.fill(right, MIN);
             int[] up = new int[m];
 
             for (int j = 0; j < m; j++) {
@@ -54,9 +51,6 @@ public class Main {
 
         }
 
-//        for (int i = 0; i < n; i++) {
-//            System.out.println(Arrays.toString(dp[i]));
-//        }
         System.out.println(dp[n - 1][m - 1]);
     }
 
