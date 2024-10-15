@@ -1,6 +1,6 @@
 # [level 2] 분기별 분화된 대장균의 개체 수 구하기 - 299308 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/299308) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/299308#qna) 
 
 ### 성능 요약
 
@@ -12,11 +12,11 @@
 
 ### 채점결과
 
-합계: 15.0 / 100.0
+합계: 100.0 / 100.0
 
 ### 제출 일자
 
-2024년 10월 15일 22:04:43
+2024년 10월 15일 22:09:52
 
 ### 문제 설명
 
