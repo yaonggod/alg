@@ -1,43 +1,79 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
-
 public class Main {
+    static class Node {
+        int num;
+        // true면 전화번호 완성됨
+        boolean isEnd;
+        Node[] next;
 
-    public static void main(String[] args) throws IOException  {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        public Node(int num, boolean isEnd, Node[] next) {
+            this.num = num;
+            this.isEnd = isEnd;
+            this.next = next;
+        }
+    }
+
+    static Node[] root;
+    static StringBuilder sb;
+
+    public static void main(String[] args) throws IOException {
         StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int t = Integer.parseInt(br.readLine());
-        for (int tc = 0; tc < t; tc++) {
+        while (t-- > 0) {
             int n = Integer.parseInt(br.readLine());
-            String[] phone = new String[n];
-            for (int i = 0; i < n; i++) {
-                phone[i] = br.readLine();
+
+            PriorityQueue<String> pq = new PriorityQueue<>(new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return o1.length() - o2.length();
+                }
+            });
+
+            while (n-- > 0) {
+                pq.offer(br.readLine());
             }
-            // 정렬하고
-            Arrays.sort(phone);
-            sb.append(consistency(n, phone));
-            if (tc != t - 1) {
-                sb.append("\n");
+
+            root = new Node[10];
+
+            boolean result = true;
+            while (!pq.isEmpty()) {
+                String phone = pq.poll();
+                if (isPre(phone)) result = false;
+                if (!result) break;
             }
+
+            sb.append(result ? "YES" : "NO").append("\n");
         }
         System.out.println(sb);
     }
 
-    static String consistency(int n, String[] phone) {
-        for (int i = 0; i < n - 1; i++) {
-            String front = phone[i];
-            String back = phone[i + 1];
-            // 앞에 전화번호가 뒤에 전화번호보다 짧은데
-            // 뒤에 전화번호가 앞에 전화번호로 시작함
-            if (front.length() < back.length()) {
-                if (back.indexOf(front) == 0) {
-                    return "NO";
-                }
+    static boolean isPre(String phone) {
+        // 루트
+        int num = Integer.parseInt(phone.substring(0, 1));
+        Node node;
+        if (root[num] != null) {
+            // 한자리만 눌렀더니 끝남
+            if (root[num].isEnd) {
+                return true;
             }
+        } else {
+            // 한자리면 여기서 끝내
+            root[num] = new Node(num, phone.length() == 1, new Node[10]);
         }
-        return "YES";
+        node = root[num];
+        for (int i = 1; i < phone.length(); i++) {
+            num = Integer.parseInt(phone.substring(i, i + 1));
+            // 번호 없다
+            if (node.next[num] == null) {
+                node.next[num] = new Node(num, phone.length() == i + 1, new Node[10]);
+            } else {
+                if (node.next[num].isEnd) return true;
+            }
+            node = node.next[num];
+        }
+        return false;
     }
 }
