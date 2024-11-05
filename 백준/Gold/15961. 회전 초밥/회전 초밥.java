@@ -12,11 +12,10 @@ public class Main {
         int k = Integer.parseInt(st.nextToken());
         int c = Integer.parseInt(st.nextToken());
 
-        int[] sushi = new int[n * 2];
+        int[] sushi = new int[n];
         int[] eat = new int[d + 1];
         for (int i = 0; i < n; i++) {
             sushi[i] = Integer.parseInt(br.readLine());
-            sushi[n + i] = sushi[i];
         }
 
         // 쿠폰은 무조건 먹음
@@ -28,11 +27,14 @@ public class Main {
             }
         }
 
+        // start에서 k개씩만 더해줌
+        int start = 0;
+
         int maxKey = ate;
-        for (int i = k; i < n * 2; i++) {
+        while (start < n - 1) {
             // 앞에걸 빼고 뒤에걸 넣음
-            int delete = sushi[i - k];
-            int add = sushi[i];
+            int delete = sushi[start];
+            int add = sushi[(start + k) % n];
 
             // 뺏더니 사라졌음
             eat[delete]--;
@@ -45,6 +47,7 @@ public class Main {
                 ate++;
             }
             maxKey = Math.max(maxKey, ate);
+            start++;
         }
         System.out.println(maxKey);
     }
